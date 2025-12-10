@@ -11,10 +11,11 @@ console.log('检测到的相关环境变量 Keys:', relatedKeys);
 console.log('- KIMI_API_KEY:', process.env.KIMI_API_KEY ? '已设置' : '未设置');
 console.log('- VOLCENGINE_APP_ID:', process.env.VOLCENGINE_APP_ID ? '已设置' : '未设置');
 console.log('- VOLCENGINE_APP_KEY:', process.env.VOLCENGINE_APP_KEY ? '已设置' : '未设置');
+console.log('- VOLCENGINE_TTS_WS:', process.env.VOLCENGINE_TTS_WS ? '已设置' : '未设置');
 
-if (!process.env.KIMI_API_KEY || !process.env.VOLCENGINE_APP_ID || !process.env.VOLCENGINE_APP_KEY) {
+if (!process.env.KIMI_API_KEY || !process.env.VOLCENGINE_APP_ID || !process.env.VOLCENGINE_APP_KEY || !process.env.VOLCENGINE_TTS_WS) {
   console.error('❌ 请先设置环境变量！参考 .env.example');
-  console.error('必需的环境变量: KIMI_API_KEY, VOLCENGINE_APP_ID, VOLCENGINE_APP_KEY');
+  console.error('必需的环境变量: KIMI_API_KEY, KIMI_BASE_URL, VOLCENGINE_APP_ID, VOLCENGINE_APP_KEY, VOLCENGINE_TTS_WS');
   process.exit(1);
 }
 
@@ -29,6 +30,14 @@ const server = createTTSServer({
     baseURL: process.env.KIMI_BASE_URL || 'https://api.moonshot.cn/v1',
     model: 'kimi-k2-0711-preview',
     systemPrompt: '你是一个友好的英语对话助手。请用简短的句子回答，并引导用户多说英语。'
+  },
+  tts: {
+    appId: process.env.VOLCENGINE_APP_ID,
+    accessKey: process.env.VOLCENGINE_APP_KEY,
+    wsUrl: process.env.VOLCENGINE_TTS_WS,
+    // speaker: 'zh_female_gaolengyujie_emo_v2_mars_bigtts', // 可选
+    // audioFormat: 'mp3', // 可选
+    // sampleRate: 24000   // 可选
   }
 });
 
@@ -36,7 +45,8 @@ console.log('🚀 正在启动 TTS Server...');
 console.log('配置信息:', {
   port: 3000,
   model: 'kimi-k2-0711-preview',
-  hasApiKey: !!process.env.KIMI_API_KEY
+  hasApiKey: !!process.env.KIMI_API_KEY,
+  hasTTSConfig: !!(process.env.VOLCENGINE_APP_ID && process.env.VOLCENGINE_APP_KEY && process.env.VOLCENGINE_TTS_WS)
 });
 
 server.start().catch((error) => {

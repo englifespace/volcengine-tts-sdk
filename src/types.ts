@@ -197,10 +197,21 @@ export interface TTSConfig {
     systemPrompt?: string;
   };
   
-  // TTS 配置
+  // TTS 配置 (火山引擎)
   tts?: {
     provider?: 'volcengine' | 'custom';
-    [key: string]: any;
+    /** 火山引擎 App ID */
+    appId?: string;
+    /** 火山引擎 Access Key */
+    accessKey?: string;
+    /** 火山引擎 TTS WebSocket URL */
+    wsUrl?: string;
+    /** 默认发音人 */
+    speaker?: string;
+    /** 音频格式 */
+    audioFormat?: 'mp3' | 'pcm' | 'wav';
+    /** 采样率 */
+    sampleRate?: number;
   };
   
   // 客户端配置
@@ -274,5 +285,23 @@ export interface ClientInfo {
   id: string;
   ip: string;
   connectedAt: Date;
+}
+
+/**
+ * TTS 服务配置（火山引擎）
+ */
+export interface VolcengineTTSConfig {
+  /** 火山引擎 App ID */
+  appId: string;
+  /** 火山引擎 Access Key */
+  accessKey: string;
+  /** 火山引擎 TTS WebSocket URL */
+  wsUrl: string;
+  /** 默认发音人 */
+  speaker?: string;
+  /** 音频格式 */
+  audioFormat?: 'mp3' | 'pcm' | 'wav';
+  /** 采样率 */
+  sampleRate?: number;
 }
 

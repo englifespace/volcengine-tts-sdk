@@ -28,14 +28,6 @@ bun add @englifespace/volcengine-tts-sdk
 
 服务端 SDK 负责处理 WebSocket 连接、与 Kimi AI 对话以及调用火山引擎 TTS 服务。
 
-**前置要求**：
-确保设置了以下环境变量：
-- `KIMI_API_KEY`: Moonshot AI API Key
-- `KIMI_BASE_URL`: Moonshot AI Base URL (例如 `https://api.moonshot.cn/v1`)
-- `VOLCENGINE_APP_ID`: 火山引擎 App ID
-- `VOLCENGINE_APP_KEY`: 火山引擎 Access Token
-- `VOLCENGINE_TTS_WS`: 火山引擎 TTS WebSocket URL (例如 `wss://openspeech.bytedance.com/api/v1/tts/ws_binary`)
-
 ```typescript
 import { createTTSServer } from '@englifespace/volcengine-tts-sdk/server';
 
@@ -45,8 +37,18 @@ const server = createTTSServer({
     host: '0.0.0.0'
   },
   ai: {
+    apiKey: 'your-kimi-api-key',
+    baseURL: 'https://api.moonshot.cn/v1',
     model: 'kimi-k2-0711-preview',
     systemPrompt: '你是一个友好的助手...'
+  },
+  tts: {
+    appId: 'your-volcengine-app-id',
+    accessKey: 'your-volcengine-access-key',
+    wsUrl: 'wss://openspeech.bytedance.com/api/v1/tts/ws_binary',
+    speaker: 'zh_female_gaolengyujie_emo_v2_mars_bigtts', // 可选，默认发音人
+    audioFormat: 'mp3', // 可选，默认 mp3
+    sampleRate: 24000   // 可选，默认 24000
   }
 });
 
@@ -134,19 +136,24 @@ async function chat() {
 ```typescript
 interface TTSConfig {
   server?: {
-    port?: number;      // 默认 8080
-    host?: string;      // 默认 '0.0.0.0'
-    corsOrigin?: string; // 默认 '*'
+    port?: number;           // 默认 8080
+    host?: string;           // 默认 '0.0.0.0'
+    corsOrigin?: string;     // 默认 '*'
   };
   ai?: {
-    apiKey?: string;
-    baseURL?: string;
-    model?: string;     // 默认 'kimi-k2-0711-preview'
-    systemPrompt?: string;
+    apiKey?: string;         // Kimi API Key (必需)
+    baseURL?: string;        // Kimi Base URL (必需)
+    model?: string;          // 默认 'kimi-k2-0711-preview'
+    systemPrompt?: string;   // 系统提示词
   };
   tts?: {
     provider?: 'volcengine';
-    // 其他 TTS 配置...
+    appId?: string;          // 火山引擎 App ID (必需)
+    accessKey?: string;      // 火山引擎 Access Key (必需)
+    wsUrl?: string;          // 火山引擎 TTS WebSocket URL (必需)
+    speaker?: string;        // 发音人
+    audioFormat?: 'mp3' | 'pcm' | 'wav';  // 音频格式
+    sampleRate?: number;     // 采样率
   };
 }
 ```

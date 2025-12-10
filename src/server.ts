@@ -19,7 +19,8 @@ import type {
   ClientMessage,
   AudioTimestamp,
   ServerStatus,
-  ClientInfo
+  ClientInfo,
+  VolcengineTTSConfig
 } from './types';
 
 // 导入TTS相关模块
@@ -366,6 +367,7 @@ class ServerStreamingAudioTextProcessor {
  */
 export class TTSServerSDK {
   private config: TTSConfig;
+  private ttsConfig: VolcengineTTSConfig;
   private wss?: WebSocketServer;
   private server?: any;
   private clients = new Map<string, any>();
@@ -381,8 +383,6 @@ export class TTSServerSDK {
         ...config.server
       },
       ai: {
-        apiKey: process.env.KIMI_API_KEY,
-        baseURL: process.env.KIMI_BASE_URL,
         model: 'kimi-k2-0711-preview',
         ...config.ai
       },
@@ -392,6 +392,17 @@ export class TTSServerSDK {
       },
       ...config
     };
+
+    // 构建 TTS 配置
+    this.ttsConfig = {
+      appId: config.tts?.appId || '',
+      accessKey: config.tts?.accessKey || '',
+      wsUrl: config.tts?.wsUrl || '',
+      speaker: config.tts?.speaker,
+      audioFormat: config.tts?.audioFormat,
+      sampleRate: config.tts?.sampleRate,
+    };
+
     // 如果没有配置 systemPrompt，则设置一个默认值
     if (!this.config.ai!.systemPrompt) {
       this.config.ai!.systemPrompt = '你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全，有帮助，准确的回答。同时，你会拒绝一切涉及恐怖主义，种族歧视，黄色暴力等问题的回答。Moonshot AI 为专有名词，不可翻译成其他语言。';
@@ -421,6 +432,11 @@ export class TTSServerSDK {
   async start(): Promise<void> {
     if (this.isRunning) {
       throw new Error('服务器已在运行中');
+    }
+
+    // 验证 TTS 配置
+    if (!this.ttsConfig.appId || !this.ttsConfig.accessKey || !this.ttsConfig.wsUrl) {
+      throw new Error('TTS 配置不完整，需要提供 tts.appId、tts.accessKey 和 tts.wsUrl');
     }
 
     try {
@@ -650,8 +666,8 @@ export class TTSServerSDK {
       console.log(`🔊 处理TTS合成请求: ${text} (${requestId})`)
       
       // 初始化TTS
-      const ws = await initWebScoketInstance()
-      const session = await startSession(ws)
+      const ws = await initWebScoketInstance(this.ttsConfig)
+      const session = await startSession(ws, this.ttsConfig)
       
       // 收集音频数据
       const audioChunks: Uint8Array[] = []
@@ -748,8 +764,8 @@ export class TTSServerSDK {
     });
 
     // 初始化TTS
-    const ws = await initWebScoketInstance();
-    const session = await startSession(ws);
+    const ws = await initWebScoketInstance(this.ttsConfig);
+    const session = await startSession(ws, this.ttsConfig);
 
     // 创建流式处理器
     const processor = new ServerStreamingAudioTextProcessor(callbacks);

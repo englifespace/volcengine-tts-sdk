@@ -12,6 +12,7 @@ import {
   WaitForEvent,
   type Message,
 } from './protocols'
+import type { VolcengineTTSConfig } from '../types'
 
 function VoiceToResourceId(voice: string): string {
   if (voice.startsWith('S_')) {
@@ -20,17 +21,23 @@ function VoiceToResourceId(voice: string): string {
   return 'volc.service_type.10029'
 }
 
+/**
+ * 初始化火山引擎 TTS WebSocket 连接
+ * @param config 火山引擎 TTS 配置
+ */
+export const initWebScoketInstance = async (config: VolcengineTTSConfig) => {
+  if (!config.appId || !config.accessKey || !config.wsUrl) {
+    throw new Error('火山引擎 TTS 配置不完整，需要 appId、accessKey 和 wsUrl');
+  }
 
-
-export const initWebScoketInstance = async () => {
   const headers = {
-    'X-Api-App-Key': process.env.VOLCENGINE_APP_ID,
-    'X-Api-Access-Key': process.env.VOLCENGINE_APP_KEY,
+    'X-Api-App-Key': config.appId,
+    'X-Api-Access-Key': config.accessKey,
     'X-Api-Resource-Id': 'volc.service_type.10029',
     'X-Api-Connect-Id': uuid.v4(),
   };
 
-  const ws = new WebSocket(process.env.VOLCENGINE_TTS_WS as string, {
+  const ws = new WebSocket(config.wsUrl, {
     headers,
     // 跳过 WebSocket 数据的 UTF-8 校验，加快二进制数据（如音频流）传输速度，适用于只关心原始数据、不需要文本解析的场景
     skipUTF8Validation: true,
@@ -53,17 +60,22 @@ export const initWebScoketInstance = async () => {
   return ws;
 };
 
-export const startSession = async (ws: WebSocket) => {
+/**
+ * 启动 TTS 会话
+ * @param ws WebSocket 连接实例
+ * @param config 可选的 TTS 配置
+ */
+export const startSession = async (ws: WebSocket, config?: Partial<VolcengineTTSConfig>) => {
   const sessionId = uuid.v4();
   const requestTemplate = {
     user: {
       uid: sessionId,
     },
     req_params: {
-      speaker: 'zh_female_gaolengyujie_emo_v2_mars_bigtts',
+      speaker: config?.speaker || 'zh_female_gaolengyujie_emo_v2_mars_bigtts',
       audio_params: {
-        format: 'mp3',
-        sample_rate: 24000,
+        format: config?.audioFormat || 'mp3',
+        sample_rate: config?.sampleRate || 24000,
         enable_timestamp: true,
       },
       additions: JSON.stringify({
