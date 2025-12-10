@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "volcengine-tts-sdk",
+      "name": "@englifespace/volcengine-tts-sdk",
       "dependencies": {
         "openai": "^4.0.0",
         "uuid": "^9.0.0",

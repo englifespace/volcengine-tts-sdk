@@ -17,9 +17,9 @@
 ## 安装
 
 ```bash
-npm install volcengine-tts-sdk
+npm install @englifespace/volcengine-tts-sdk
 # 或
-bun add volcengine-tts-sdk
+bun add @englifespace/volcengine-tts-sdk
 ```
 
 ## 快速开始
@@ -37,7 +37,7 @@ bun add volcengine-tts-sdk
 - `VOLCENGINE_TTS_WS`: 火山引擎 TTS WebSocket URL (例如 `wss://openspeech.bytedance.com/api/v1/tts/ws_binary`)
 
 ```typescript
-import { createTTSServer } from 'volcengine-tts-sdk/server';
+import { createTTSServer } from '@englifespace/volcengine-tts-sdk/server';
 
 const server = createTTSServer({
   server: {
@@ -67,7 +67,7 @@ start();
 客户端 SDK 负责连接服务端、发送消息、接收音频流并播放。
 
 ```typescript
-import { createTTSClient } from 'volcengine-tts-sdk/client';
+import { createTTSClient } from '@englifespace/volcengine-tts-sdk/client';
 
 const client = createTTSClient({
   client: {

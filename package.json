@@ -1,7 +1,13 @@
 {
-  "name": "volcengine-tts-sdk",
+  "name": "@englifespace/volcengine-tts-sdk",
   "version": "1.0.0",
   "description": "TTS系统SDK",
+  "author": "Sean <sean@englife.space>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/englifespace/volcengine-tts-sdk"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -31,7 +37,8 @@
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
     "example:server": "bun run examples/server.ts",
-    "example:client": "bun run examples/serve.ts"
+    "example:client": "bun run examples/serve.ts",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "openai": "^4.0.0",
@@ -47,7 +54,20 @@
   "peerDependencies": {
     "@types/node": ">=16.0.0"
   },
+  "keywords": [
+    "tts",
+    "volcengine",
+    "speech",
+    "kimi",
+    "ai",
+    "websocket",
+    "streaming"
+  ],
+  "homepage": "https://github.com/englifespace/volcengine-tts-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/englifespace/volcengine-tts-sdk/issues"
+  },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }
