@@ -1,0 +1,53 @@
+{
+  "name": "volcengine-tts-sdk",
+  "version": "1.0.0",
+  "description": "TTS系统SDK",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup --config tsup.config.ts",
+    "dev": "tsup --config tsup.config.ts --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "example:server": "bun run examples/server.ts",
+    "example:client": "bun run examples/serve.ts"
+  },
+  "dependencies": {
+    "openai": "^4.0.0",
+    "ws": "^8.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.0.0",
+    "@types/uuid": "^9.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@types/node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
