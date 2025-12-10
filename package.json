@@ -1,6 +1,6 @@
 {
   "name": "@englifespace/volcengine-tts-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TTS系统SDK",
   "author": "Sean <sean@englife.space>",
   "license": "ISC",
